@@ -1,0 +1,12 @@
+{
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "html.format.enable": false,
+    "json.format.enable": false,
+    "javascript.format.enable": false,
+    "typescript.format.enable": false,
+    "css.format.enable": false,
+    "less.format.enable": false,
+    "scss.format.enable": false,
+    "prettier.jsxSingleQuote": true,
+    "prettier.singleQuote": true
+}
