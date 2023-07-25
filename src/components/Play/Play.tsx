@@ -1,15 +1,6 @@
 import { Button, Container, Typography, Box } from '@mui/material';
 import { useState } from 'react';
 
-import {
-  createTheme,
-  responsiveFontSizes,
-  ThemeProvider,
-} from '@mui/material/styles';
-
-let theme = createTheme();
-theme = responsiveFontSizes(theme);
-
 const Play = () => {
   return (
     <Container
@@ -19,9 +10,9 @@ const Play = () => {
         alignItems: 'center',
       }}
     >
-      <ThemeProvider theme={theme}>
-        <Typography variant='h2'>Game started!</Typography>
-      </ThemeProvider>
+      <Typography variant='h2' sx={{ mb: 2 }}>
+        Game started!
+      </Typography>
       <Box>
         <Button
           sx={{ display: 'block', mb: 1 }}

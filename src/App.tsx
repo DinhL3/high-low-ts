@@ -1,11 +1,27 @@
-import './App.scss';
 import { Routes, Route, Outlet } from 'react-router-dom';
+import {
+  createTheme,
+  responsiveFontSizes,
+  ThemeProvider,
+} from '@mui/material/styles';
 
 import Home from './components/Home/Home';
 import Play from './components/Play/Play';
 
+let theme = createTheme({
+  typography: {
+    fontFamily: ['Kanit', 'sans-serif'].join(','),
+  },
+});
+
+theme = responsiveFontSizes(theme);
+
 function BasicLayout() {
-  return <Outlet />;
+  return (
+    <ThemeProvider theme={theme}>
+      <Outlet />
+    </ThemeProvider>
+  );
 }
 
 function App() {
