@@ -1,7 +1,29 @@
 import { Button, Container, Typography, Box } from '@mui/material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+import PlayingCard from '../../models/playingCard';
 
 const Play = () => {
+  //   const [cardDeck, setCardDeck] = useState<PlayingCard[]>([]);
+  let deck: PlayingCard[];
+
+  function buildCardDeck() {
+    const suits: string[] = ['spades', 'clubs', 'diamonds', 'hearts'];
+
+    //use modern js instead of nested for loop
+    deck = suits.flatMap((suit) =>
+      Array.from({ length: 13 }, (_, index) => new PlayingCard(index + 2, suit))
+    );
+
+    console.log(deck);
+  }
+
+//   useEffect(() => {
+//     buildCardDeck();
+//   }, []);
+
+  buildCardDeck();
+
   return (
     <Container
       sx={{
@@ -11,7 +33,7 @@ const Play = () => {
       }}
     >
       <Typography variant='h2' sx={{ mb: 2 }}>
-        Game started!
+        Game started
       </Typography>
       <Box>
         <Button
