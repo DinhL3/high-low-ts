@@ -1,46 +1,52 @@
 import { Button, Container, Typography, Box } from '@mui/material';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import PlayingCard from '../../models/playingCard';
+import PokerCardFront from '../PokerCard/PokerCardFront';
 
 const Play = () => {
-  const [cardDeck, setCardDeck] = useState<PlayingCard[]>([]);
+  // const [cardDeck, setCardDeck] = useState<PlayingCard[]>([]);
+  const deckRef = useRef<PlayingCard[]>([])
   const [currentCard, setCurrentCard] = useState<PlayingCard | null>(null);
 
-  function buildCardDeck() {
+  function buildCardDeck(): void {
     const suits: string[] = ['spades', 'clubs', 'diamonds', 'hearts'];
 
     //use modern js instead of nested for loop
-    const deck = suits.flatMap((suit) =>
+    const newDeck = suits.flatMap((suit) =>
       Array.from({ length: 13 }, (_, index) => new PlayingCard(index + 2, suit))
     );
 
-    console.log(deck);
-    setCardDeck(deck);
+    deckRef.current = newDeck;
+    console.log('New deck: ', deckRef.current);
+
+    pickRandomCard(deckRef.current);
   }
 
-  function pickRandomCard() {
-    if (cardDeck.length === 0) {
-      console.log('No cards left in the deck!');
-      setCurrentCard(null);
-      return;
+  function pickRandomCard(deck: PlayingCard[]): void {
+    if (deck.length === 0) {
+      console.log('No cards left in the deck!');    
     }
 
-    const randomIndex = Math.floor(Math.random() * cardDeck.length);
-    const pickedCard = cardDeck[randomIndex];
+    const randomIndex = Math.floor(Math.random() * deck.length);
+    const pickedCard = deck[randomIndex];
 
     // Create a new array without the picked card
-    const updatedDeck = cardDeck.filter((card) => card !== pickedCard);
-
-    setCurrentCard(pickedCard);
-    setCardDeck(updatedDeck);
+    const updatedDeck = deck.filter((card) => card !== pickedCard);
+    
+    deckRef.current = updatedDeck;
+    setCurrentCard(pickedCard)
     console.log('Picked Card:', pickedCard);
+    console.log('Deck after picking: ',deckRef.current);
   }
 
   useEffect(() => {
-    buildCardDeck();
-    pickRandomCard();
+    buildCardDeck();    
   }, []);
+
+  // useEffect(() => {
+  //   pickRandomCard();
+  // }, [cardDeck]);
 
   //   use buildCardDeck() in useEffect to make it execute only once
   // if the function is outside of useEffect, it will trigger every render
@@ -57,6 +63,7 @@ const Play = () => {
         Game started
       </Typography>
       <Box>
+        <PokerCardFront card={currentCard}/>
         <Button
           sx={{ display: 'block', mb: 1 }}
           variant='contained'
