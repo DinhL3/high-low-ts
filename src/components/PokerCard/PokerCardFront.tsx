@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import PlayingCard from '../../models/playingCard';
 import styles from './PokerCardFront.module.scss';
 
@@ -40,9 +41,12 @@ const PokerCardFront = ({ card }: PokerCardFrontProps) => {
   const cardFileName: string = `${valueString}${suitString}.svg`;
 
   return (
-    <div className={styles['poker-card-front']}>      
-        <img src={`/cards/${cardFileName}`} alt={`Card ${valueString}${suitString}`} />      
-    </div>
+    <Box sx={{mb: 2}}>
+      <img
+        src={`/cards/${cardFileName}`}
+        alt={`Card ${valueString}${suitString}`}
+      />
+    </Box>
   );
 };
 
