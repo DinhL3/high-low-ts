@@ -15,33 +15,12 @@ import GuessButtonTextAndProbability from './GuessButtonTextAndProbability';
 
 const BettingForm = () => {
   const cardsCtx = useContext(CardsContext);
-  const [selectedHigherOrLower, setSelectedHigherOrLower] = useState<
-    null | 'higher' | 'lower'
-  >(null);
-  const [selectedColor, setSelectedColor] = useState<null | 'black' | 'red'>(
-    null
-  );
-  const [selectedRange, setSelectedRange] = useState<null | '2-10' | 'JQKA'>(
-    null
-  );
   const [betAmount, setBetAmount] = useState<string>('');
   const [betAmountError, setBetAmountError] = useState<string | null>(null);
-  const [isNoGuessSelected, setIsNoGuessSelected] = useState<boolean>(true);
+  const [userGuess, setUserGuess] = useState<null | string>(null);
 
-  function handleHigherOrLowerClick(selected: 'higher' | 'lower'): void {
-    setSelectedHigherOrLower((prevSelected) =>
-      prevSelected === selected ? null : selected
-    );
-  }
-
-  function handleColorClick(selected: 'black' | 'red'): void {
-    setSelectedColor((prevSelected) =>
-      prevSelected === selected ? null : selected
-    );
-  }
-
-  function handleRangeClick(selected: '2-10' | 'JQKA'): void {
-    setSelectedRange((prevSelected) =>
+  function handleGuessButtonClick(selected: string): void {
+    setUserGuess((prevSelected) =>
       prevSelected === selected ? null : selected
     );
   }
@@ -60,18 +39,8 @@ const BettingForm = () => {
     setBetAmount(betAmountInput);
   }
 
-  // put this function in useEffect is correct, because it will be called every time state of buttons change
-  // the function depends on state of buttons, not the clicks
-  function handleGuessSelectionCheck(): void {
-    if (!selectedHigherOrLower && !selectedColor && !selectedRange) {
-      setIsNoGuessSelected(true);
-    } else {
-      setIsNoGuessSelected(false);
-    }
-  }
-
   function handleSubmit(): void {
-    if (isNoGuessSelected) {
+    if (!userGuess) {
       return;
     }
 
@@ -81,27 +50,18 @@ const BettingForm = () => {
     }
 
     const betData = {
-      selectedHigherOrLower: selectedHigherOrLower,
-      selectedColor: selectedColor,
-      selectedRange: selectedRange,
+      userGuess: userGuess,
       betAmount: Number(betAmount),
     };
 
     console.log('Bet Data:', betData);
   }
 
-  // write function to convert probability to percentage string
-
-  useEffect(() => {
-    handleGuessSelectionCheck();
-  }, [selectedColor, selectedHigherOrLower, selectedRange]);
-
   const buttonColumnStyles = {
     display: 'flex',
     flexDirection: 'column',
     gap: 1,
   };
-  
 
   return (
     <FormControl>
@@ -111,13 +71,14 @@ const BettingForm = () => {
       >
         <Box sx={buttonColumnStyles}>
           <Button
-            variant={
-              selectedHigherOrLower === 'higher' ? 'contained' : 'outlined'
-            }
+            variant={userGuess === 'higher' ? 'contained' : 'outlined'}
             color='primary'
             disableElevation
-            disabled={cardsCtx.higherOrEqualProbability === 0 || cardsCtx.higherOrEqualProbability === 1}
-            onClick={() => handleHigherOrLowerClick('higher')}
+            disabled={
+              cardsCtx.higherOrEqualProbability === 0 ||
+              cardsCtx.higherOrEqualProbability === 1
+            }
+            onClick={() => handleGuessButtonClick('higher')}
           >
             <GuessButtonTextAndProbability
               type='higher'
@@ -126,13 +87,14 @@ const BettingForm = () => {
           </Button>
           <Button
             sx={{}}
-            variant={
-              selectedHigherOrLower === 'lower' ? 'contained' : 'outlined'
-            }
+            variant={userGuess === 'lower' ? 'contained' : 'outlined'}
             color='warning'
             disableElevation
-            disabled={cardsCtx.lowerOrEqualProbability === 0 || cardsCtx.lowerOrEqualProbability === 1}
-            onClick={() => handleHigherOrLowerClick('lower')}
+            disabled={
+              cardsCtx.lowerOrEqualProbability === 0 ||
+              cardsCtx.lowerOrEqualProbability === 1
+            }
+            onClick={() => handleGuessButtonClick('lower')}
           >
             <GuessButtonTextAndProbability
               type='lower'
@@ -142,10 +104,10 @@ const BettingForm = () => {
         </Box>
         <Box sx={buttonColumnStyles}>
           <Button
-            variant={selectedColor === 'black' ? 'contained' : 'outlined'}
+            variant={userGuess === 'black' ? 'contained' : 'outlined'}
             color='black'
             disableElevation
-            onClick={() => handleColorClick('black')}
+            onClick={() => handleGuessButtonClick('black')}
           >
             <GuessButtonTextAndProbability
               type='black'
@@ -153,10 +115,10 @@ const BettingForm = () => {
             />
           </Button>
           <Button
-            variant={selectedColor === 'red' ? 'contained' : 'outlined'}
+            variant={userGuess === 'red' ? 'contained' : 'outlined'}
             color='error'
             disableElevation
-            onClick={() => handleColorClick('red')}
+            onClick={() => handleGuessButtonClick('red')}
           >
             <GuessButtonTextAndProbability
               type='red'
@@ -166,10 +128,10 @@ const BettingForm = () => {
         </Box>
         <Box sx={buttonColumnStyles}>
           <Button
-            variant={selectedRange === '2-10' ? 'contained' : 'outlined'}
+            variant={userGuess === '2-10' ? 'contained' : 'outlined'}
             color='primary'
             disableElevation
-            onClick={() => handleRangeClick('2-10')}
+            onClick={() => handleGuessButtonClick('2-10')}
           >
             <GuessButtonTextAndProbability
               type='2-10'
@@ -177,10 +139,10 @@ const BettingForm = () => {
             />
           </Button>
           <Button
-            variant={selectedRange === 'JQKA' ? 'contained' : 'outlined'}
+            variant={userGuess === 'JQKA' ? 'contained' : 'outlined'}
             color='secondary'
             disableElevation
-            onClick={() => handleRangeClick('JQKA')}
+            onClick={() => handleGuessButtonClick('JQKA')}
           >
             <GuessButtonTextAndProbability
               type='JQKA'
@@ -189,9 +151,9 @@ const BettingForm = () => {
           </Button>
         </Box>
       </Box>
-      {isNoGuessSelected && (
+      {!userGuess && (
         <Alert sx={{ mb: 2 }} severity='warning'>
-          Please choose at least one guess above
+          Please choose your guess above
         </Alert>
       )}
       <TextField
