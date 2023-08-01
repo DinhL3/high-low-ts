@@ -1,18 +1,20 @@
 // Component that handle betting form. Includes toggle buttons, bet amount input and submit button
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import {
   Button,
   Alert,
   Box,
   FormControl,
   TextField,
+  Typography,
 } from '@mui/material';
-import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
-import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
+
 import { CardsContext } from '../../store/cards-context';
+import GuessButtonTextAndProbability from './GuessButtonTextAndProbability';
 
 const BettingForm = () => {
+  const cardsCtx = useContext(CardsContext);
   const [selectedHigherOrLower, setSelectedHigherOrLower] = useState<
     null | 'higher' | 'lower'
   >(null);
@@ -29,19 +31,19 @@ const BettingForm = () => {
   function handleHigherOrLowerClick(selected: 'higher' | 'lower'): void {
     setSelectedHigherOrLower((prevSelected) =>
       prevSelected === selected ? null : selected
-    )    
+    );
   }
 
   function handleColorClick(selected: 'black' | 'red'): void {
     setSelectedColor((prevSelected) =>
       prevSelected === selected ? null : selected
-    );    
+    );
   }
 
   function handleRangeClick(selected: '2-10' | 'JQKA'): void {
     setSelectedRange((prevSelected) =>
       prevSelected === selected ? null : selected
-    );    
+    );
   }
 
   function handleBetAmountChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -88,9 +90,18 @@ const BettingForm = () => {
     console.log('Bet Data:', betData);
   }
 
+  // write function to convert probability to percentage string
+
   useEffect(() => {
     handleGuessSelectionCheck();
   }, [selectedColor, selectedHigherOrLower, selectedRange]);
+
+  const buttonColumnStyles = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 1,
+  };
+  
 
   return (
     <FormControl>
@@ -98,17 +109,20 @@ const BettingForm = () => {
         className='button-columns-box'
         sx={{ display: 'flex', gap: 2, mb: 2 }}
       >
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <Box sx={buttonColumnStyles}>
           <Button
             variant={
               selectedHigherOrLower === 'higher' ? 'contained' : 'outlined'
             }
             color='primary'
             disableElevation
-            startIcon={<KeyboardDoubleArrowUpIcon />}
+            disabled={cardsCtx.higherOrEqualProbability === 0 || cardsCtx.higherOrEqualProbability === 1}
             onClick={() => handleHigherOrLowerClick('higher')}
           >
-            Higher or same
+            <GuessButtonTextAndProbability
+              type='higher'
+              probability={cardsCtx.higherOrEqualProbability}
+            />
           </Button>
           <Button
             sx={{}}
@@ -117,40 +131,50 @@ const BettingForm = () => {
             }
             color='warning'
             disableElevation
-            startIcon={<KeyboardDoubleArrowDownIcon />}
+            disabled={cardsCtx.lowerOrEqualProbability === 0 || cardsCtx.lowerOrEqualProbability === 1}
             onClick={() => handleHigherOrLowerClick('lower')}
           >
-            Lower or same
+            <GuessButtonTextAndProbability
+              type='lower'
+              probability={cardsCtx.lowerOrEqualProbability}
+            />
           </Button>
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <Box sx={buttonColumnStyles}>
           <Button
             variant={selectedColor === 'black' ? 'contained' : 'outlined'}
             color='black'
             disableElevation
-            startIcon={'♠♣'}
             onClick={() => handleColorClick('black')}
           >
-            Black
+            <GuessButtonTextAndProbability
+              type='black'
+              probability={cardsCtx.blackProbability}
+            />
           </Button>
           <Button
             variant={selectedColor === 'red' ? 'contained' : 'outlined'}
             color='error'
             disableElevation
-            startIcon={'♦♥'}
             onClick={() => handleColorClick('red')}
           >
-            Red
+            <GuessButtonTextAndProbability
+              type='red'
+              probability={cardsCtx.redProbability}
+            />
           </Button>
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <Box sx={buttonColumnStyles}>
           <Button
             variant={selectedRange === '2-10' ? 'contained' : 'outlined'}
             color='primary'
             disableElevation
             onClick={() => handleRangeClick('2-10')}
           >
-            2-10
+            <GuessButtonTextAndProbability
+              type='2-10'
+              probability={cardsCtx.twoToTenProbability}
+            />
           </Button>
           <Button
             variant={selectedRange === 'JQKA' ? 'contained' : 'outlined'}
@@ -158,12 +182,15 @@ const BettingForm = () => {
             disableElevation
             onClick={() => handleRangeClick('JQKA')}
           >
-            JQKA
+            <GuessButtonTextAndProbability
+              type='JQKA'
+              probability={cardsCtx.jToAProbability}
+            />
           </Button>
         </Box>
       </Box>
       {isNoGuessSelected && (
-        <Alert sx={{ mb: 2 }} severity='error'>
+        <Alert sx={{ mb: 2 }} severity='warning'>
           Please choose at least one guess above
         </Alert>
       )}

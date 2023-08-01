@@ -41,10 +41,11 @@ const PokerCardFront = ({ card }: PokerCardFrontProps) => {
   const cardFileName: string = `${valueString}${suitString}.svg`;
 
   return (
-    <Box sx={{mb: 2}}>
+    <Box mb={2}>
       <img
         src={`/cards/${cardFileName}`}
         alt={`Card ${valueString}${suitString}`}
+        style={{  height: '150px' }}        
       />
     </Box>
   );

@@ -23,7 +23,7 @@ const Play = () => {
         alignItems: 'center',
       }}
     >
-      <Typography variant='h3' sx={{ mb: 1 }} color='primary'>
+      <Typography variant='h4' sx={{ mb: 1 }} color='primary'>
         Guess the next card
       </Typography>
       <Typography variant='subtitle1' sx={{ mb: 2 }} color='grey'>
