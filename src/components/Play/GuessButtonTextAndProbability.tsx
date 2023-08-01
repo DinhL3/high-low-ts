@@ -4,7 +4,7 @@ import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrow
 import NumbersIcon from '@mui/icons-material/Numbers';
 
 interface GuessButtonTextAndProbabilityProps {
-  type: 'higher' | 'lower' | 'black' | 'red' | '2-10' | 'JQKA';
+  type: 'higher' | 'lower' | 'black' | 'red' | 'twoToTen' | 'jackToAce';
   probability: number;
 }
 
@@ -30,9 +30,9 @@ const GuessButtonTextAndProbability = ({
             ♦♥
           </Typography>
         );
-      case '2-10':
+      case 'twoToTen':
         return <NumbersIcon sx={{ mr: 1 }} fontSize='large' />;
-      case 'JQKA':
+      case 'jackToAce':
         return (
           <Typography sx={{mr: 1}} variant='button' fontSize='1.5rem'>
             ♛
@@ -50,8 +50,8 @@ const GuessButtonTextAndProbability = ({
     lower: 'Lower or same',
     black: 'Black',
     red: 'Red',
-    '2-10': '2 - 10',
-    JQKA: 'JQKA',
+    twoToTen: '2 - 10',
+    jackToAce: 'JQKA',
   };
 
   text = typeToTextMap[type];

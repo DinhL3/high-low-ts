@@ -128,25 +128,25 @@ const BettingForm = () => {
         </Box>
         <Box sx={buttonColumnStyles}>
           <Button
-            variant={userGuess === '2-10' ? 'contained' : 'outlined'}
+            variant={userGuess === 'twoToTen' ? 'contained' : 'outlined'}
             color='primary'
             disableElevation
-            onClick={() => handleGuessButtonClick('2-10')}
+            onClick={() => handleGuessButtonClick('twoToTen')}
           >
             <GuessButtonTextAndProbability
-              type='2-10'
+              type='twoToTen'
               probability={cardsCtx.twoToTenProbability}
             />
           </Button>
           <Button
-            variant={userGuess === 'JQKA' ? 'contained' : 'outlined'}
+            variant={userGuess === 'jackToAce' ? 'contained' : 'outlined'}
             color='secondary'
             disableElevation
-            onClick={() => handleGuessButtonClick('JQKA')}
+            onClick={() => handleGuessButtonClick('jackToAce')}
           >
             <GuessButtonTextAndProbability
-              type='JQKA'
-              probability={cardsCtx.jToAProbability}
+              type='jackToAce'
+              probability={cardsCtx.jackToAceProbability}
             />
           </Button>
         </Box>

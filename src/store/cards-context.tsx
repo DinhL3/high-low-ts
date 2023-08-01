@@ -9,7 +9,7 @@ type CardsContextObj = {
   blackProbability: number;
   redProbability: number;
   twoToTenProbability: number;
-  jToAProbability: number;
+  jackToAceProbability: number;
   buildCardDeck: () => void;
   pickRandomCard: () => void;
 };
@@ -22,7 +22,7 @@ export const CardsContext = createContext<CardsContextObj>({
   blackProbability: 0,
   redProbability: 0,
   twoToTenProbability: 0,
-  jToAProbability: 0,
+  jackToAceProbability: 0,
   buildCardDeck: () => {},
   pickRandomCard: () => {},
 });
@@ -39,7 +39,7 @@ const CardsContextProvider = ({ children }: Props) => {
   const [blackProbability, setBlackProbability] = useState<number>(0);
   const [redProbability, setRedProbability] = useState<number>(0);
   const [twoToTenProbability, setTwoToTenProbability] = useState<number>(0);
-  const [jToAProbability, setJToAProbability] = useState<number>(0);
+  const [jackToAceProbability, setjackToAceProbability] = useState<number>(0);
 
   // write function to calculate all the probabilities
   function calculateProbabilities(): void {
@@ -54,7 +54,7 @@ const CardsContextProvider = ({ children }: Props) => {
     let blackCount = 0;
     let redCount = 0;
     let twoToTenCount = 0;
-    let jToACount = 0;
+    let jackToAceCount = 0;
 
     deckRef.current.forEach((card) => {
       if (card.value >= currentCard.value) {
@@ -74,7 +74,7 @@ const CardsContextProvider = ({ children }: Props) => {
       if (card.value >= 2 && card.value <= 10) {
         twoToTenCount++;
       } else {
-        jToACount++;
+        jackToAceCount++;
       }
     });
 
@@ -84,7 +84,7 @@ const CardsContextProvider = ({ children }: Props) => {
     setBlackProbability(blackCount / totalCards);
     setRedProbability(redCount / totalCards);
     setTwoToTenProbability(twoToTenCount / totalCards);
-    setJToAProbability(jToACount / totalCards);
+    setjackToAceProbability(jackToAceCount / totalCards);
   }
 
   function pickRandomCard(): void {
@@ -123,7 +123,7 @@ const CardsContextProvider = ({ children }: Props) => {
     blackProbability: blackProbability,
     redProbability: redProbability,
     twoToTenProbability: twoToTenProbability,
-    jToAProbability: jToAProbability,
+    jackToAceProbability: jackToAceProbability,
     buildCardDeck: buildCardDeck,
     pickRandomCard: pickRandomCard,
   };
