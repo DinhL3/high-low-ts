@@ -8,6 +8,7 @@ import {
   FormControl,
   TextField,
   Typography,
+  InputAdornment
 } from '@mui/material';
 
 import { CardsContext } from '../../store/cards-context';
@@ -18,6 +19,7 @@ const BettingForm = () => {
   const [betAmount, setBetAmount] = useState<string>('');
   const [betAmountError, setBetAmountError] = useState<string | null>(null);
   const [userGuess, setUserGuess] = useState<null | string>(null);
+  const [winningPayout, setWinningPayout] = useState<null | number>(null);
 
   function handleGuessButtonClick(selected: string): void {
     setUserGuess((prevSelected) =>
@@ -39,6 +41,23 @@ const BettingForm = () => {
     setBetAmount(betAmountInput);
   }
 
+  function winningPayoutCalculator(): void {
+    if (!userGuess || !betAmount  || betAmountError) {
+      setWinningPayout(null);
+      return;
+    }
+    const betAmountNumber = Number(betAmount);
+    const probability = cardsCtx[userGuess + 'Probability'];
+    //set winning payout to 2 decimal places
+    if (typeof probability === 'number' && probability > 0) {
+      const payout = betAmountNumber / probability;
+      const roundedPayout = Math.round(payout * 100) / 100; // Round to 2 decimal places
+      setWinningPayout(roundedPayout);
+    } else {
+      setWinningPayout(null); // Handle the case where probability is not a number
+    }
+  }
+
   function handleSubmit(): void {
     if (!userGuess) {
       return;
@@ -57,6 +76,10 @@ const BettingForm = () => {
     console.log('Bet Data:', betData);
   }
 
+  useEffect(() => {
+    winningPayoutCalculator();
+  }, [userGuess, betAmount]);
+
   const buttonColumnStyles = {
     display: 'flex',
     flexDirection: 'column',
@@ -71,33 +94,33 @@ const BettingForm = () => {
       >
         <Box sx={buttonColumnStyles}>
           <Button
-            variant={userGuess === 'higher' ? 'contained' : 'outlined'}
+            variant={userGuess === 'higherOrEqual' ? 'contained' : 'outlined'}
             color='primary'
             disableElevation
             disabled={
               cardsCtx.higherOrEqualProbability === 0 ||
               cardsCtx.higherOrEqualProbability === 1
             }
-            onClick={() => handleGuessButtonClick('higher')}
+            onClick={() => handleGuessButtonClick('higherOrEqual')}
           >
             <GuessButtonTextAndProbability
-              type='higher'
+              type='higherOrEqual'
               probability={cardsCtx.higherOrEqualProbability}
             />
           </Button>
           <Button
             sx={{}}
-            variant={userGuess === 'lower' ? 'contained' : 'outlined'}
+            variant={userGuess === 'lowerOrEqual' ? 'contained' : 'outlined'}
             color='warning'
             disableElevation
             disabled={
               cardsCtx.lowerOrEqualProbability === 0 ||
               cardsCtx.lowerOrEqualProbability === 1
             }
-            onClick={() => handleGuessButtonClick('lower')}
+            onClick={() => handleGuessButtonClick('lowerOrEqual')}
           >
             <GuessButtonTextAndProbability
-              type='lower'
+              type='lowerOrEqual'
               probability={cardsCtx.lowerOrEqualProbability}
             />
           </Button>
@@ -163,15 +186,28 @@ const BettingForm = () => {
         InputLabelProps={{
           shrink: true,
         }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              🪙
+            </InputAdornment>
+          ),
+        }}
         onChange={handleBetAmountChange}
         error={Boolean(betAmountError)}
         helperText={betAmountError}
       />
+      {winningPayout && winningPayout > 0 && (
+        <Typography variant='subtitle1' sx={{ mb: 2 }} color='grey'>
+          Expected payout: 🪙{winningPayout} 
+        </Typography>
+      )}
       <Button
         type='submit'
         variant='contained'
         color='success'
         disableElevation
+        disabled={Boolean(betAmountError) || !userGuess}
         onClick={handleSubmit}
       >
         Bet

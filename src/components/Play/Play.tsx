@@ -21,6 +21,8 @@ const Play = () => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
       }}
     >
       <Typography variant='h4' sx={{ mb: 1 }} color='primary'>

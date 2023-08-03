@@ -9,7 +9,8 @@ const Home = () => {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        alignItems: 'center',        
+        alignItems: 'center',
+        height: '100vh',        
       }}
     >
         <Typography variant='h1' sx={{mb: 2 }}>

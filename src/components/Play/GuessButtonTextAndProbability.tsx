@@ -4,7 +4,7 @@ import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrow
 import NumbersIcon from '@mui/icons-material/Numbers';
 
 interface GuessButtonTextAndProbabilityProps {
-  type: 'higher' | 'lower' | 'black' | 'red' | 'twoToTen' | 'jackToAce';
+  type: 'higherOrEqual' | 'lowerOrEqual' | 'black' | 'red' | 'twoToTen' | 'jackToAce';
   probability: number;
 }
 
@@ -14,9 +14,9 @@ const GuessButtonTextAndProbability = ({
 }: GuessButtonTextAndProbabilityProps) => {
   const Icon = () => {
     switch (type) {
-      case 'higher':
+      case 'higherOrEqual':
         return <KeyboardDoubleArrowUpIcon sx={{mr: 1}} fontSize='large' />;
-      case 'lower':
+      case 'lowerOrEqual':
         return <KeyboardDoubleArrowDownIcon sx={{mr: 1}} fontSize='large' />;
       case 'black':
         return (
@@ -46,8 +46,8 @@ const GuessButtonTextAndProbability = ({
   let text: string;
   // alternative to using if else
   const typeToTextMap: { [key: string]: string } = {
-    higher: 'Higher or same',
-    lower: 'Lower or same',
+    higherOrEqual: 'Higher or same',
+    lowerOrEqual: 'Lower or same',
     black: 'Black',
     red: 'Red',
     twoToTen: '2 - 10',

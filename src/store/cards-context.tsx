@@ -4,6 +4,7 @@ import PlayingCard from '../models/playingCard';
 type CardsContextObj = {
   cardDeck: PlayingCard[];
   currentCard: PlayingCard | null;
+  playedCards: PlayingCard[];
   higherOrEqualProbability: number;
   lowerOrEqualProbability: number;
   blackProbability: number;
@@ -12,11 +13,13 @@ type CardsContextObj = {
   jackToAceProbability: number;
   buildCardDeck: () => void;
   pickRandomCard: () => void;
+  [key: string]: any;
 };
 
 export const CardsContext = createContext<CardsContextObj>({
   cardDeck: [],
   currentCard: null,
+  playedCards: [],
   higherOrEqualProbability: 0,
   lowerOrEqualProbability: 0,
   blackProbability: 0,
@@ -34,6 +37,7 @@ interface Props {
 const CardsContextProvider = ({ children }: Props) => {
   const deckRef = useRef<PlayingCard[]>([]);
   const [currentCard, setCurrentCard] = useState<PlayingCard | null>(null);
+  const [playedCards, setPlayedCards] = useState<PlayingCard[]>([]);
   const [higherOrEqualProbability, setHigherOrEqualProbability] = useState<number>(0);
   const [lowerOrEqualProbability, setLowerOrEqualProbability] = useState<number>(0);
   const [blackProbability, setBlackProbability] = useState<number>(0);
@@ -98,6 +102,7 @@ const CardsContextProvider = ({ children }: Props) => {
     const updatedDeck = deckRef.current.filter((card) => card !== pickedCard);
     deckRef.current = updatedDeck;
     setCurrentCard(pickedCard);
+    setPlayedCards((prevPlayedCards) => [...prevPlayedCards, pickedCard]);
     // console.log('Picked Card:', pickedCard);
     // console.log('Deck after picking: ', deckRef.current);
   }
@@ -118,6 +123,7 @@ const CardsContextProvider = ({ children }: Props) => {
   const contextValue: CardsContextObj = {
     cardDeck: deckRef.current,
     currentCard: currentCard,
+    playedCards: playedCards,
     higherOrEqualProbability: higherOrEqualProbability,
     lowerOrEqualProbability: lowerOrEqualProbability,
     blackProbability: blackProbability,
