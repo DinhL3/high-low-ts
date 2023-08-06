@@ -1,5 +1,14 @@
-import React, { createContext, useState, useRef, useEffect } from 'react';
+import React, {
+  createContext,
+  useState,
+  useRef,
+  useEffect,
+  useContext,
+} from 'react';
 import PlayingCard from '../models/playingCard';
+import betData from '../models/betData';
+
+import { UserContext } from './user-context';
 
 type CardsContextObj = {
   cardDeck: PlayingCard[];
@@ -13,6 +22,7 @@ type CardsContextObj = {
   jackToAceProbability: number;
   buildCardDeck: () => void;
   pickRandomCard: () => void;
+  handleUserBetSubmit: (data: betData) => void;
   [key: string]: any;
 };
 
@@ -28,6 +38,7 @@ export const CardsContext = createContext<CardsContextObj>({
   jackToAceProbability: 0,
   buildCardDeck: () => {},
   pickRandomCard: () => {},
+  handleUserBetSubmit: () => {},
 });
 
 interface Props {
@@ -36,10 +47,15 @@ interface Props {
 
 const CardsContextProvider = ({ children }: Props) => {
   const deckRef = useRef<PlayingCard[]>([]);
-  const [currentCard, setCurrentCard] = useState<PlayingCard | null>(null);
+  const prevCardRef = useRef<PlayingCard | null>(null);
+  // const [currentCard, setCurrentCard] = useState<PlayingCard | null>(null);
+  const currentCardRef = useRef<PlayingCard | null>(null);
   const [playedCards, setPlayedCards] = useState<PlayingCard[]>([]);
-  const [higherOrEqualProbability, setHigherOrEqualProbability] = useState<number>(0);
-  const [lowerOrEqualProbability, setLowerOrEqualProbability] = useState<number>(0);
+  
+  const [higherOrEqualProbability, setHigherOrEqualProbability] =
+    useState<number>(0);
+  const [lowerOrEqualProbability, setLowerOrEqualProbability] =
+    useState<number>(0);
   const [blackProbability, setBlackProbability] = useState<number>(0);
   const [redProbability, setRedProbability] = useState<number>(0);
   const [twoToTenProbability, setTwoToTenProbability] = useState<number>(0);
@@ -47,7 +63,7 @@ const CardsContextProvider = ({ children }: Props) => {
 
   // write function to calculate all the probabilities
   function calculateProbabilities(): void {
-    if (deckRef.current.length === 0 || !currentCard) {
+    if (deckRef.current.length === 0 || !currentCardRef.current) {
       return;
     }
 
@@ -61,11 +77,11 @@ const CardsContextProvider = ({ children }: Props) => {
     let jackToAceCount = 0;
 
     deckRef.current.forEach((card) => {
-      if (card.value >= currentCard.value) {
+      if (card.value >= currentCardRef.current!.value) {
         higherOrEqualCount++;
-      } 
-      
-      if (card.value <= currentCard.value) {
+      }
+
+      if (card.value <= currentCardRef.current!.value) {
         lowerOrEqualCount++;
       }
 
@@ -101,10 +117,10 @@ const CardsContextProvider = ({ children }: Props) => {
     const pickedCard = deckRef.current[randomIndex];
     const updatedDeck = deckRef.current.filter((card) => card !== pickedCard);
     deckRef.current = updatedDeck;
-    setCurrentCard(pickedCard);
+    prevCardRef.current = currentCardRef.current;
+    currentCardRef.current = pickedCard;
+    // setCurrentCard(pickedCard);
     setPlayedCards((prevPlayedCards) => [...prevPlayedCards, pickedCard]);
-    // console.log('Picked Card:', pickedCard);
-    // console.log('Deck after picking: ', deckRef.current);
   }
 
   function buildCardDeck(): void {
@@ -120,9 +136,48 @@ const CardsContextProvider = ({ children }: Props) => {
     pickRandomCard();
   }
 
+  function handleUserBetSubmit(data: betData): void {
+    pickRandomCard();
+
+    if (currentCardRef.current === null || prevCardRef.current === null) {
+      return;
+    }
+
+    let isCorrect = false;
+    const currentValue = currentCardRef.current.value;
+    const currentSuit = currentCardRef.current.suit;
+
+    switch (data.userGuess) {
+      case 'higherOrEqual':
+        isCorrect = currentValue >= prevCardRef.current.value;
+        break;
+      case 'lowerOrEqual':
+        isCorrect = currentValue <= prevCardRef.current.value;
+        break;
+      case 'black':
+        isCorrect = currentSuit === 'spades' || currentSuit === 'clubs';
+        break;
+      case 'red':
+        isCorrect = currentSuit === 'diamonds' || currentSuit === 'hearts';
+        break;
+      case 'twoToTen':
+        isCorrect = currentValue >= 2 && currentValue <= 10;
+        break;
+      case 'jackToAce':
+        isCorrect = currentValue >= 11 && currentValue <= 14;
+        break;
+    }
+
+    if (isCorrect) {
+      console.log('Correct!');
+    } else {
+      console.log('Wrong!');
+    }
+  }
+
   const contextValue: CardsContextObj = {
     cardDeck: deckRef.current,
-    currentCard: currentCard,
+    currentCard: currentCardRef.current,
     playedCards: playedCards,
     higherOrEqualProbability: higherOrEqualProbability,
     lowerOrEqualProbability: lowerOrEqualProbability,
@@ -132,11 +187,12 @@ const CardsContextProvider = ({ children }: Props) => {
     jackToAceProbability: jackToAceProbability,
     buildCardDeck: buildCardDeck,
     pickRandomCard: pickRandomCard,
+    handleUserBetSubmit: handleUserBetSubmit,
   };
 
   useEffect(() => {
     calculateProbabilities();
-  }, [currentCard]);
+  }, [currentCardRef.current]);
 
   return (
     <CardsContext.Provider value={contextValue}>

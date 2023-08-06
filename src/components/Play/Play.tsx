@@ -32,7 +32,7 @@ const Play = () => {
       <Typography variant='body1' sx={{
         position: 'absolute',
         top: 0,
-        right: 0,
+        right: '1rem',
       }}>Balance: 🪙{userCtx.user?.balance}</Typography>
       <Typography variant='h4' sx={{ mb: 1 }} color='primary'>
         Guess the next card

@@ -4,11 +4,15 @@ import User from '../models/user';
 type UserContextObj = {
   user: User | null;
   loginUser: (username: string, balance: number) => void;
+  deductBalance: (amount: number) => void;
+  addBalance: (amount: number) => void;
 };
 
 export const UserContext = createContext<UserContextObj>({
   user: null,
   loginUser: () => {},
+  deductBalance: () => {},
+  addBalance: () => {},
 });
 
 interface Props {
@@ -23,9 +27,25 @@ const UserContextProvider = ({ children }: Props) => {
     setUser(newUser);
   }
 
+  function deductBalance(amount: number): void {
+    if (user) {
+      user.balance -= amount;
+      setUser(user);
+    }
+  }
+
+  function addBalance(amount: number): void {
+    if (user) {
+      user.balance += amount;
+      setUser(user);
+    }
+  }
+
   const contextValue: UserContextObj = {
     user: user,
     loginUser: loginUser,
+    deductBalance: deductBalance,
+    addBalance: addBalance,
   };
 
   return (

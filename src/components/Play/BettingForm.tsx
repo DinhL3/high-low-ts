@@ -8,10 +8,11 @@ import {
   FormControl,
   TextField,
   Typography,
-  InputAdornment
+  InputAdornment,
 } from '@mui/material';
 
 import { CardsContext } from '../../store/cards-context';
+import betData from '../../models/betData';
 import GuessButtonTextAndProbability from './GuessButtonTextAndProbability';
 
 const BettingForm = () => {
@@ -42,7 +43,7 @@ const BettingForm = () => {
   }
 
   function winningPayoutCalculator(): void {
-    if (!userGuess || !betAmount  || betAmountError) {
+    if (!userGuess || !betAmount || betAmountError) {
       setWinningPayout(null);
       return;
     }
@@ -59,12 +60,11 @@ const BettingForm = () => {
   }
 
   function handleSubmit(): void {
-    const betData = {
-      userGuess: userGuess,
-      betAmount: Number(betAmount),
-    };
-
-    console.log('Bet Data:', betData);
+    let data;
+    if (userGuess && betAmount) {
+      data = new betData(userGuess, Number(betAmount));
+      cardsCtx.handleUserBetSubmit(data);
+    }
   }
 
   useEffect(() => {
@@ -178,11 +178,7 @@ const BettingForm = () => {
           shrink: true,
         }}
         InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              🪙
-            </InputAdornment>
-          ),
+          startAdornment: <InputAdornment position='start'>🪙</InputAdornment>,
         }}
         onChange={handleBetAmountChange}
         error={Boolean(betAmountError)}
@@ -190,7 +186,7 @@ const BettingForm = () => {
       />
       {winningPayout && winningPayout > 0 && (
         <Typography variant='subtitle2' sx={{ mb: 2 }} color='grey'>
-          Expected payout: 🪙{winningPayout} 
+          Expected payout: 🪙{winningPayout}
         </Typography>
       )}
       <Button
