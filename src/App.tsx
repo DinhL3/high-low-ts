@@ -1,5 +1,6 @@
 import { Routes, Route, Outlet } from 'react-router-dom';
 import CardsContextProvider from './store/cards-context';
+import UserContextProvider from './store/user-context';
 
 import {
   createTheme,
@@ -46,11 +47,13 @@ theme = responsiveFontSizes(theme);
 
 function BasicLayout() {
   return (
-    <CardsContextProvider>
-      <ThemeProvider theme={theme}>
-        <Outlet />
-      </ThemeProvider>
-    </CardsContextProvider>
+    <UserContextProvider>
+      <CardsContextProvider>
+        <ThemeProvider theme={theme}>
+          <Outlet />
+        </ThemeProvider>
+      </CardsContextProvider>
+    </UserContextProvider>
   );
 }
 

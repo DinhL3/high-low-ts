@@ -59,15 +59,6 @@ const BettingForm = () => {
   }
 
   function handleSubmit(): void {
-    if (!userGuess) {
-      return;
-    }
-
-    if (betAmountError || !betAmount) {
-      setBetAmountError('Please enter a valid bet amount');
-      return;
-    }
-
     const betData = {
       userGuess: userGuess,
       betAmount: Number(betAmount),
@@ -182,7 +173,7 @@ const BettingForm = () => {
       <TextField
         id='bet-amount'
         label='Bet amount'
-        sx={{ mb: 2 }}
+        sx={{ mb: 1 }}
         InputLabelProps={{
           shrink: true,
         }}
@@ -198,7 +189,7 @@ const BettingForm = () => {
         helperText={betAmountError}
       />
       {winningPayout && winningPayout > 0 && (
-        <Typography variant='subtitle1' sx={{ mb: 2 }} color='grey'>
+        <Typography variant='subtitle2' sx={{ mb: 2 }} color='grey'>
           Expected payout: 🪙{winningPayout} 
         </Typography>
       )}
