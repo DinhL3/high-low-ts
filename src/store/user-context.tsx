@@ -30,6 +30,7 @@ const UserContextProvider = ({ children }: Props) => {
   function deductBalance(amount: number): void {
     if (user) {
       user.balance -= amount;
+      user.balance = Math.round(user.balance * 100) / 100;
       setUser(user);
     }
   }
@@ -37,6 +38,7 @@ const UserContextProvider = ({ children }: Props) => {
   function addBalance(amount: number): void {
     if (user) {
       user.balance += amount;
+      user.balance = Math.round(user.balance * 100) / 100;
       setUser(user);
     }
   }

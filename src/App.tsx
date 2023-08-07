@@ -50,7 +50,7 @@ function BasicLayout() {
     <UserContextProvider>
       <CardsContextProvider>
         <ThemeProvider theme={theme}>
-          <Outlet />
+          <Outlet />          
         </ThemeProvider>
       </CardsContextProvider>
     </UserContextProvider>

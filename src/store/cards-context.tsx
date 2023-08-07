@@ -10,6 +10,8 @@ import betData from '../models/betData';
 
 import { UserContext } from './user-context';
 
+import { toast } from 'react-toastify';
+
 type CardsContextObj = {
   cardDeck: PlayingCard[];
   currentCard: PlayingCard | null;
@@ -51,7 +53,7 @@ const CardsContextProvider = ({ children }: Props) => {
   // const [currentCard, setCurrentCard] = useState<PlayingCard | null>(null);
   const currentCardRef = useRef<PlayingCard | null>(null);
   const [playedCards, setPlayedCards] = useState<PlayingCard[]>([]);
-  
+
   const [higherOrEqualProbability, setHigherOrEqualProbability] =
     useState<number>(0);
   const [lowerOrEqualProbability, setLowerOrEqualProbability] =
@@ -60,6 +62,8 @@ const CardsContextProvider = ({ children }: Props) => {
   const [redProbability, setRedProbability] = useState<number>(0);
   const [twoToTenProbability, setTwoToTenProbability] = useState<number>(0);
   const [jackToAceProbability, setjackToAceProbability] = useState<number>(0);
+
+  const userCtx = useContext(UserContext);
 
   // write function to calculate all the probabilities
   function calculateProbabilities(): void {
@@ -170,8 +174,30 @@ const CardsContextProvider = ({ children }: Props) => {
 
     if (isCorrect) {
       console.log('Correct!');
+      userCtx.addBalance(data.winningPayout);
+      toast(`🎉 Correct! You won 🪙${data.winningPayout}`, {
+        position: 'top-left',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
     } else {
       console.log('Wrong!');
+      userCtx.deductBalance(data.betAmount);
+      toast.error(`That was wrong. You lost 🪙${data.betAmount}`, {
+        position: 'top-left',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
     }
   }
 

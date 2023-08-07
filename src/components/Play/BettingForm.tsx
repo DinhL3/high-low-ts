@@ -51,7 +51,7 @@ const BettingForm = () => {
     const probability = cardsCtx[userGuess + 'Probability'];
     //set winning payout to 2 decimal places
     if (typeof probability === 'number' && probability > 0) {
-      const payout = betAmountNumber / probability;
+      const payout = betAmountNumber / probability - betAmountNumber;
       const roundedPayout = Math.round(payout * 100) / 100; // Round to 2 decimal places
       setWinningPayout(roundedPayout);
     } else {
@@ -59,11 +59,19 @@ const BettingForm = () => {
     }
   }
 
+  function resetForm() {
+    setUserGuess(null);
+    setBetAmount('');
+    setBetAmountError(null);
+    setWinningPayout(null);
+  }
+
   function handleSubmit(): void {
     let data;
-    if (userGuess && betAmount) {
-      data = new betData(userGuess, Number(betAmount));
+    if (userGuess && betAmount && winningPayout) {
+      data = new betData(userGuess, Number(betAmount), winningPayout);
       cardsCtx.handleUserBetSubmit(data);
+      resetForm();
     }
   }
 
@@ -173,6 +181,7 @@ const BettingForm = () => {
       <TextField
         id='bet-amount'
         label='Bet amount'
+        value={betAmount}
         sx={{ mb: 1 }}
         InputLabelProps={{
           shrink: true,
@@ -186,7 +195,7 @@ const BettingForm = () => {
       />
       {winningPayout && winningPayout > 0 && (
         <Typography variant='subtitle2' sx={{ mb: 2 }} color='grey'>
-          Expected payout: 🪙{winningPayout}
+          Expected winning: 🪙{winningPayout}
         </Typography>
       )}
       <Button
