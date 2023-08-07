@@ -45,7 +45,7 @@ const PokerCardFront = ({ card }: PokerCardFrontProps) => {
       <img
         src={`/cards/${cardFileName}`}
         alt={`Card ${valueString}${suitString}`}
-        style={{  height: '150px' }}        
+        style={{  height: '200px' }}        
       />
     </Box>
   );
