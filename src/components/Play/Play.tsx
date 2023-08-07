@@ -15,7 +15,7 @@ const Play = () => {
 
   useEffect(() => {
     cardsCtx.buildCardDeck();
-    userCtx.loginUser('Dinh', 100);
+    userCtx.loginUser('User', 100);
   }, []);
 
   return (
